@@ -1,4 +1,5 @@
 import sys
+import re
 import csv
 import sqlparse
 
@@ -6,8 +7,7 @@ filename="metadata.txt"
 
 totaldata={}
 
-
-
+def execute(command):
 
 
 def main():
@@ -36,7 +36,40 @@ def main():
         print(totaldata)
     except:
         print("Metadata.txt file not found")
-    
+
+
+
+    count=len(sys.argv)
+    #    print(sys.argv[1])
+    flag=0
+    #    print(sys.argv[1][-1])
+    if(count <=1 ):
+        print("please enter command in command line")
+    if(count>=2):
+        com=sys.argv[1]
+        command=com[:-1].strip()
+        command=command.lower()
+        semicolon=com[-1]
+        s1="select"
+        s2="from"
+        if(semicolon!=';'):
+            print("Please enter correct command , Semicolon is missing")
+        if(re.search(s1,command) and re.search(s2,command)):  #checking if select,from is there in command
+            flag=1
+        else:
+            print("Please enter valid command")
+        execute(command)
+
+
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+   
+"""
     for tname in totaldata:
         with open(tname+'.csv','r') as csvfile:
             csvreader=csv.reader(csvfile)
@@ -46,29 +79,5 @@ def main():
                 for att in totaldata[tname]:
                     totaldata[tname][att].append(record(ind))
                     ind+=1
+"""
 
-
-
-
-    print(totaldata)
-
-    count=len(sys.argv)
-    #    print(sys.argv[1])
-    #    print(sys.argv[1][-1])
-    if(count <=1 ):
-        print("please enter command in command line")
-    if(count>=2):
-        command=sys.argv[1]
-        semicolon=command[-1]
-        if(semicolon!=';'):
-            print("Please enter correct command , Semicolon is missing")
-    #        else:
-    #           read_data(filename)
-
-
-
-   # myq=sqlparse.parse(com[:1])[0].tokens
-
-
-if __name__ == '__main__':
-    main()
