@@ -1,13 +1,51 @@
 import sys
 import re
+from collections import OrderedDict
 import csv
 import sqlparse
 
 filename="metadata.txt"
+store_data=OrderedDict()
+totaldata=OrderedDict()
 
-totaldata={}
+
+def call_csv(table):
+    table=table+'.csv'
+    rows=[]
+    try:
+        file1=open(table,'r').readlines()
+    except:
+        print("File not found")
+
+    for liness in file1:
+        rows.append(liness.rstrip("\r\n"))
+
+    return rows
+
 
 def execute(command):
+    
+
+
+def extract_data():
+
+    for table in totaldata:
+        store_data[table]=OrderedDict()
+        for vals in totaldata[table]:
+            store_data[table][vals]=[]
+
+    
+    for table in totaldata:
+        table_rows=[]
+        table_rows=call_csv(table)
+        for row in table_rows:
+            row=row.split(',')
+            i=len(row)
+            for var in range(i):
+                add_value=int(row[var].strip('""'))
+                mine=totaldata[table][var]
+                store_data[table][mine].append(add_value)
+                
 
 
 def main():
@@ -38,12 +76,14 @@ def main():
         print("Metadata.txt file not found")
 
 
+    
+    extract_data()
+        
+    #print(store_data)
 
     count=len(sys.argv)
-    #    print(sys.argv[1])
     flag=0
-    #    print(sys.argv[1][-1])
-    if(count <=1 ):
+    if(count<=1):
         print("please enter command in command line")
     if(count>=2):
         com=sys.argv[1]
@@ -56,9 +96,12 @@ def main():
             print("Please enter correct command , Semicolon is missing")
         if(re.search(s1,command) and re.search(s2,command)):  #checking if select,from is there in command
             flag=1
-        else:
+        elif flag==0:
             print("Please enter valid command")
-        execute(command)
+        elif re.match(r'^(?i)(select\ ).+(?i)(\ from\ ).+[;]$', line):
+            print("You have an error in your SQL syntax")
+        else:
+            execute(com)
 
 
 
@@ -69,15 +112,3 @@ if __name__ == '__main__':
 
 
    
-"""
-    for tname in totaldata:
-        with open(tname+'.csv','r') as csvfile:
-            csvreader=csv.reader(csvfile)
-
-            for record in csvreader:
-                ind=0
-                for att in totaldata[tname]:
-                    totaldata[tname][att].append(record(ind))
-                    ind+=1
-"""
-
